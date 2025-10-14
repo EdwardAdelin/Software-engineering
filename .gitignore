@@ -1,0 +1,14 @@
+@"
+# Foldere de mediu Python
+venv/
+env/
+.env/
+Lib/
+__pycache__/
+*.pyc
+
+# Fișiere mari / DLL / LIB
+*.dll
+*.lib
+*.pdb
+"@ | Set-Content .gitignore
