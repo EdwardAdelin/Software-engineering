@@ -1,0 +1,26 @@
+@startuml 5_1_3_SendMessage
+title 5.1.3 Interface 1: SendMessage (FR7, FR9)
+actor Sender
+participant "CommunicationModerationModule" as CMM
+database "MessagingDataModule" as MDM
+queue "Notification Process" as NP
+
+Sender -> CMM : SendMessage(senderID, receiverID, content, jobID)
+activate CMM
+  CMM -> CMM : CheckCommunicationAccess()
+  CMM -> MDM : InsertMessage(data)
+  activate MDM
+    MDM -> CMM : return success
+  deactivate MDM
+
+  alt Insert Successful
+    CMM -> NP : QueueNotification(receiverID, 'NewMessage', payload)
+    note over NP
+      Asynchronous trigger (FR9)
+    end note
+    CMM -> Sender : return true
+  else Insert Failed
+    CMM -> Sender : return false
+  end
+deactivate CMM
+@enduml

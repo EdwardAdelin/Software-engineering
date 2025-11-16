@@ -1,0 +1,27 @@
+@startuml
+title 5.2.2 Process 2 Interface: InitiateJobIndexing (NFR1, NFR5)
+participant "JobSkillManagementModule" as JSM
+queue "JCP Queue" as JCP_Queue
+participant "Job Creation Process" as JCP
+database "Search Index" as SI
+queue "Notification Queue" as NQ
+
+JSM -> JCP_Queue : InitiateJobIndexingAndBroadcasting(jobID)
+note over JSM
+  Called after job persistence. Void output expected.
+end note
+
+JCP_Queue -> JCP : Event Received (Asynchronous execution)
+activate JCP
+  JCP -> JDM : Retrieve Job Details (jobID)
+  
+  group Concurrent Actions
+    JCP -> SI : Index Job Data (NFR1/NFR5)
+    JCP -> NQ : QueueNotification(All Providers, 'NewJobPosted', jobID)
+    note over JCP
+      Broadcasting event trigger to all relevant users
+    end note
+  end
+  
+deactivate JCP
+@enduml

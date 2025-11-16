@@ -1,0 +1,48 @@
+@startuml SkillHub_Module_Dependencies
+' Skinparam for clarity and professional look
+skinparam component {
+  BorderColor #5879A8
+  BackgroundColor #DDEEFF
+  FontSize 14
+}
+skinparam package {
+  BorderColor #404040
+  BackgroundColor #EEEEEE
+  FontColor #404040
+}
+skinparam arrow {
+  Color #5879A8
+  Thickness 2
+  HeadSize 1.5
+}
+skinparam title {
+  FontSize 18
+  FontName Arial
+}
+
+title SkillHub Functional Module Dependencies (Chapter 4.1)
+
+package "Functional Code Modules (Application Layer)" {
+  [UserManagementModule] as UMM
+  [JobSkillManagementModule] as JSM
+  [CommunicationModerationModule] as CMM
+}
+
+package "Data Modules (Persistence Layer)" {
+  [UserDataModule] as UDM
+  [JobDataModule] as JDM
+  [MessagingDataModule] as MDM
+}
+
+' Define dependencies (Access/Persistence)
+UMM --> UDM : Access/Persistence (FR1, FR2)
+JSM --> JDM : Access/Persistence (FR3-FR6)
+CMM --> MDM : Access/Persistence (FR7, FR8)
+
+legend left
+  **Dependency Key:**
+  -- The arrow indicates a "relies on" relationship.
+  -- Code Modules call Data Modules for CRUD operations.
+end legend
+
+@enduml

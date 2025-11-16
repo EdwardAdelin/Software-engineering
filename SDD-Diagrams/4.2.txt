@@ -1,0 +1,58 @@
+@startuml SkillHub_Process_Dependencies
+' Skinparam for clarity and professional look
+skinparam component {
+  BorderColor #5879A8
+  BackgroundColor #DDEEFF
+  FontSize 14
+}
+skinparam package {
+  BorderColor #404040
+  BackgroundColor #EEEEEE
+  FontColor #404040
+}
+skinparam arrow {
+  Color #009933
+  Thickness 2
+  HeadSize 1.5
+}
+skinparam title {
+  FontSize 18
+  FontName Arial
+}
+
+title SkillHub Concurrent Process Dependencies (Chapter 4.2)
+
+package "Functional Modules (Triggers)" {
+  [JobSkillManagementModule] as JSM #YellowGreen
+  [CommunicationModerationModule] as CMM #YellowGreen
+}
+
+package "Concurrent Processes" {
+  [NotificationProcess] as NP #LightBlue
+  [SystemMaintenanceProcess] as SMP #LightBlue
+}
+
+package "Data Modules (Access Targets)" {
+  [UserDataModule] as UDM #LightCoral
+  [JobDataModule] as JDM #LightCoral
+  [MessagingDataModule] as MDM #LightCoral
+}
+
+' Define Trigger Dependencies (Functional Modules TO Processes)
+JSM .> NP : Triggers (New Proposal / Job Update)
+CMM .> NP : Triggers (New Message)
+
+' Define Data Access Dependencies (Processes TO Data Modules)
+NP --> UDM : Data Access (Contact Info)
+
+SMP --> UDM : Data Access (Backup/Deletion)
+SMP --> JDM : Data Access (Backup)
+SMP --> MDM : Data Access (Backup)
+
+legend left
+  **Dependency Key:**
+  --> Solid Line: Data Access / Relies On
+  .>. Dashed Line: Asynchronous Trigger
+end legend
+
+@enduml

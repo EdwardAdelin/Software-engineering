@@ -1,0 +1,23 @@
+@startuml 5_1_2_SearchJobs
+title 5.1.2 Interface 2: SearchJobs (FR5, NFR1)
+actor Provider
+participant "Presentation Layer" as PL
+participant "JobSkillManagementModule" as JSM
+participant "JobSearchEngine" as JSE
+database "Search Index" as SI
+
+Provider -> PL : Request Search (filterCriteria)
+PL -> JSM : SearchJobs(criteria)
+
+activate JSM
+  JSM -> JSE : ExecuteQuery(criteria)
+  activate JSE
+    JSE -> SI : Specialized Search Query (Optimized)
+    activate SI
+      SI -> JSE : return Job IDs, Summary Data
+    deactivate SI
+    JSE -> JSM : return Array of Job Summaries
+  deactivate JSE
+  JSM -> PL : return Job Summaries Array
+deactivate JSM
+@enduml
