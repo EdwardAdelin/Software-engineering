@@ -1,0 +1,16 @@
+@startuml
+actor Freelancer
+participant JobController
+participant JobPoster
+participant JobDataModule
+participant NotificationProcess
+
+Freelancer -> JobController: SubmitProposalAPI(providerID, jobID, proposalDetails)
+JobController -> JobPoster: RecordProposal(providerID, jobID, proposalDetails)
+JobPoster -> JobDataModule: InsertProposal(providerID, jobID, proposalDetails)
+JobDataModule --> JobPoster: Confirmation(success)
+JobPoster --> JobController: Result(success)
+JobController -> NotificationProcess: TriggerNotification(clientID, 'NewProposal', payload)
+NotificationProcess --> Freelancer: Notification queued
+JobController --> Freelancer: Return result
+@enduml

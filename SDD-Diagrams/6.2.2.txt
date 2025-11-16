@@ -1,0 +1,42 @@
+@startuml
+' === JobDataModule Entity Diagram ===
+
+class JobPost {
+  +JobID : int <<PK>>
+  +ClientID : int <<FK>>
+  +Title : string
+  +Description : text
+  +Budget : decimal
+  +Deadline : date
+  +Status : enum('Open','Awarded','Closed')
+}
+
+class Proposal {
+  +ProposalID : int <<PK>>
+  +JobID : int <<FK>>
+  +ProviderID : int <<FK>>
+  +ProposedPrice : decimal
+  +DeliveryTime : int
+  +Description : text
+  +SubmissionDate : date
+}
+
+class JobCategory {
+  +CategoryID : int <<PK>>
+  +Name : string
+  +ParentID : int <<FK>>
+}
+
+class JobToCategory {
+  +JobID : int <<PK,FK>>
+  +CategoryID : int <<PK,FK>>
+}
+
+' === Relationships ===
+User "1" -- "0..*" JobPost : publishes
+JobPost "1" -- "0..*" Proposal : receives
+User "1" -- "0..*" Proposal : submits
+JobCategory "1" -- "0..*" JobCategory : parent category
+JobPost "1" -- "0..*" JobToCategory : categorized
+JobCategory "1" -- "0..*" JobToCategory : assigned to
+@enduml

@@ -1,0 +1,71 @@
+@startuml
+package "UserManagementModule" {
+    class UserController {
+        +RegisterUser(email, password, role)
+        +Login(email, password)
+        +UpdateProfile(userID, profileData)
+        +AdminManageAccount(userID, action)
+    }
+
+    class UserAuthenticator {
+        +HashPassword(password)
+        +VerifyPassword(email, inputPassword)
+        +GenerateSessionToken(userID)
+    }
+
+    class UserProfileManager {
+        +CreateDefaultProfile(userID)
+        +UpdateProfile(userID, profileData)
+        +RetrieveProfile(userID)
+        +SanitizeProfileData(profileData)
+    }
+
+    UserController --> UserAuthenticator
+    UserController --> UserProfileManager
+}
+
+package "JobSkillManagementModule" {
+    class JobController {
+        +PostJobAPI(clientID, jobDetails)
+        +ManagePostedJobsAPI(jobID)
+        +BrowseJobsAPI(filterCriteria)
+        +SubmitProposalAPI(providerID, jobID, proposalDetails)
+    }
+
+    class JobPoster {
+        +CreateJob(jobDetails)
+        +UpdateJob(jobID, jobDetails)
+        +DeleteJob(jobID)
+        +RecordProposal(providerID, jobID, proposalDetails)
+    }
+
+    class JobSearchEngine {
+        +SearchJobs(filterCriteria)
+        +GetJobDetails(jobID)
+    }
+
+    JobController --> JobPoster
+    JobController --> JobSearchEngine
+}
+
+package "CommunicationModerationModule" {
+    class MessageController {
+        +SendMessageAPI(senderID, receiverID, content, jobID)
+        +GetConversationAPI(userID1, userID2, jobID)
+    }
+
+    class MessageService {
+        +StoreMessage(senderID, receiverID, content, jobID)
+        +RetrieveHistory(userID1, userID2, jobID)
+        +CheckCommunicationAccess(senderID, receiverID, jobID)
+    }
+
+    class ModerationManager {
+        +ReviewContent(adminID, contentID)
+        +ApplyAction(adminID, contentType, contentID, action)
+    }
+
+    MessageController --> MessageService
+    MessageController --> ModerationManager
+}
+@enduml

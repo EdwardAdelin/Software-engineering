@@ -1,0 +1,38 @@
+@startuml
+' === MessagingDataModule Entity Diagram ===
+
+class Message {
+  +MessageID : int <<PK>>
+  +SenderID : int <<FK>>
+  +ReceiverID : int <<FK>>
+  +Content : text
+  +Timestamp : datetime
+  +JobID : int <<FK, optional>>
+}
+
+class Notification {
+  +NotificationID : int <<PK>>
+  +UserID : int <<FK>>
+  +Type : string
+  +Content : text
+  +IsRead : boolean
+  +Timestamp : datetime
+}
+
+class ContentFlag {
+  +FlagID : int <<PK>>
+  +ReporterID : int <<FK>>
+  +ContentType : string
+  +ContentID : int
+  +Reason : string
+  +Status : enum('New','Resolved','Ignored')
+}
+
+' === Relationships ===
+User "1" -- "0..*" Message : sends
+User "1" -- "0..*" Message : receives
+JobPost "0..1" -- "0..*" Message : related to
+User "1" -- "0..*" Notification : receives
+User "1" -- "0..*" ContentFlag : reports
+
+@enduml

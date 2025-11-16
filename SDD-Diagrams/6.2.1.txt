@@ -1,0 +1,47 @@
+@startuml
+' === UserDataModule Entity Diagram ===
+
+class User {
+  +UserID : int <<PK>>
+  +Email : string
+  +PasswordHash : string
+  +Role : enum('Client','Provider','Admin')
+  +IsActive : boolean
+}
+
+class Profile {
+  +ProfileID : int <<PK>>
+  +UserID : int <<FK>>
+  +Name : string
+  +Description : string
+  +ContactInfo : string
+  +Location : string
+  +RegistrationDate : date
+}
+
+class Skill {
+  +SkillID : int <<PK>>
+  +Name : string
+  +Category : string
+}
+
+class UserSkill {
+  +UserID : int <<PK,FK>>
+  +SkillID : int <<PK,FK>>
+  +ExperienceLevel : string
+}
+
+class AdminLog {
+  +LogID : int <<PK>>
+  +AdminID : int <<FK>>
+  +ActionType : string
+  +TargetUserID : int
+  +Timestamp : datetime
+}
+
+' === Relationships ===
+User "1" -- "0..*" Profile : has
+User "1" -- "0..*" UserSkill : offers
+Skill "1" -- "0..*" UserSkill : mapped in
+User "1" -- "0..*" AdminLog : performs
+@enduml
