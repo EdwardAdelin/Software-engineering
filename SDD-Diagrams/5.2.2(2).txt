@@ -1,0 +1,24 @@
+@startuml
+title 5.2.2 Process 2 Interface: SubmitProposalProcess (FR6)
+actor Provider
+participant "Presentation Layer" as PL
+participant "Job Creation Process" as JCP
+database "JobDataModule" as JDM
+queue "Notification Process" as NP
+
+Provider -> PL : Submit Proposal Data
+PL -> JCP : SubmitProposalProcess(providerID, jobID, details)
+activate JCP
+  JCP -> JDM : InsertProposal(data)
+  activate JDM
+    JDM -> JCP : return success status
+  deactivate JDM
+  
+  alt Successful Insertion
+    JCP -> NP : QueueNotification(Client, 'NewProposal', jobID)
+    JCP -> PL : return true
+  else Failed Insertion
+    JCP -> PL : return false
+  end
+deactivate JCP
+@enduml

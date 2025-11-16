@@ -1,0 +1,26 @@
+@startuml 5_1_1_RegisterUser
+title 5.1.1 Interface 1: RegisterUser (FR1, NFR4)
+actor User
+participant "Presentation Layer" as PL
+participant "UserManagementModule" as UMM
+participant "UserAuthenticator" as UA
+database "UserDataModule" as UDM
+
+User -> PL : Submit Data (email, password, role)
+PL -> UMM : RegisterUser(data)
+
+activate UMM
+  UMM -> UDM : CheckEmailExists(email)
+  alt Email is unique
+    UMM -> UA : HashPassword(password)
+    activate UA
+      UA -> UMM : return hashedPassword
+    deactivate UA
+    UMM -> UDM : CreateUser(hashedPassword, role)
+    UMM -> UDM : CreateDefaultProfile(userID)
+    UMM -> PL : return Success {'status': 'OK', 'userID': 123}
+  else Email exists
+    UMM -> PL : return "Error: Email already exists"
+  end
+deactivate UMM
+@enduml

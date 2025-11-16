@@ -1,0 +1,43 @@
+@startuml SkillHub_Data_Module_Dependencies
+' Skinparam for clarity and professional look
+skinparam component {
+  BorderColor #404040
+  BackgroundColor #EEEEFF
+  FontSize 14
+}
+skinparam package {
+  BorderColor #0044AA
+  BackgroundColor #CCEEFF
+  FontColor #0044AA
+}
+skinparam arrow {
+  Color #0044AA
+  Thickness 2
+  HeadSize 1.5
+}
+skinparam title {
+  FontSize 18
+  FontName Arial
+}
+
+title SkillHub Data Module Dependencies (Chapter 4.3)
+
+[UserDataModule] as UDM #LightGreen
+[JobDataModule] as JDM #LightYellow
+[MessagingDataModule] as MDM #LightBlue
+
+' Define Foreign Key (FK) Dependencies
+' JobDataModule depends on UserDataModule
+JDM --> UDM : FK: ClientID, ProviderID (Jobs/Proposals linked to Users)
+
+' MessagingDataModule depends on UserDataModule and JobDataModule
+MDM --> UDM : FK: SenderID, ReceiverID (Messages linked to Users)
+MDM --> JDM : FK: JobID/ProposalID (Messages contextualized by Jobs)
+
+legend left
+  **Relationship Key:**
+  -- The arrow indicates a **Foreign Key (FK)** dependency.
+  -- The source module requires data from the target module to maintain data integrity.
+end legend
+
+@enduml
